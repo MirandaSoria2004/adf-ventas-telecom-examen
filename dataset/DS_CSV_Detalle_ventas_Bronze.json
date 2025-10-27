@@ -1,0 +1,59 @@
+{
+	"name": "DS_CSV_Detalle_ventas_Bronze",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Storage_Raw_Ventas",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "BRONZE"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Detalle_ventas.csv",
+				"container": "raw-ventas"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "sls_ord_num",
+				"type": "String"
+			},
+			{
+				"name": "sls_prd_key",
+				"type": "String"
+			},
+			{
+				"name": "sls_cust_id",
+				"type": "String"
+			},
+			{
+				"name": "sls_order_dt",
+				"type": "String"
+			},
+			{
+				"name": "sls_ship_dt",
+				"type": "String"
+			},
+			{
+				"name": "sls_sales",
+				"type": "String"
+			},
+			{
+				"name": "sls_quantity",
+				"type": "String"
+			},
+			{
+				"name": "sls_price",
+				"type": "String"
+			}
+		]
+	}
+}
