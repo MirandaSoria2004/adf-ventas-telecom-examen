@@ -1,0 +1,375 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-ventas-843121"
+		},
+		"LS_SQL_DW_Ventas_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'LS_SQL_DW_Ventas'"
+		},
+		"LS_Storage_Raw_Ventas_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_Storage_Raw_Ventas'"
+		},
+		"LS_SQL_DW_Ventas_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqlventas843121.database.windows.net"
+		},
+		"LS_SQL_DW_Ventas_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "DW_Ventas"
+		},
+		"LS_SQL_DW_Ventas_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adminventas"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_Clientes_BD_GEN_Bronze')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Storage_Raw_Ventas",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "BRONZE"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Clientes_BD-GEN.csv",
+						"container": "raw-clientes"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CID",
+						"type": "String"
+					},
+					{
+						"name": "BDATE",
+						"type": "String"
+					},
+					{
+						"name": "GEN",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Storage_Raw_Ventas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_Clientes_Bronze')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Storage_Raw_Ventas",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "BRONZE"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Clientes.csv",
+						"container": "raw-clientes"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "cst_id",
+						"type": "String"
+					},
+					{
+						"name": "cst_key",
+						"type": "String"
+					},
+					{
+						"name": "cst_firstname",
+						"type": "String"
+					},
+					{
+						"name": "cst_lastname",
+						"type": "String"
+					},
+					{
+						"name": "cst_marital_status",
+						"type": "String"
+					},
+					{
+						"name": "cst_gndr",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Storage_Raw_Ventas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_Clientes_location_Bronze')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Storage_Raw_Ventas",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "BRONZE"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Clientes_location.csv",
+						"container": "raw-clientes"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CID",
+						"type": "String"
+					},
+					{
+						"name": "CNTRY",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Storage_Raw_Ventas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_Detalle_ventas_Bronze')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Storage_Raw_Ventas",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "BRONZE"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Detalle_ventas.csv",
+						"container": "raw-ventas"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "sls_ord_num",
+						"type": "String"
+					},
+					{
+						"name": "sls_prd_key",
+						"type": "String"
+					},
+					{
+						"name": "sls_cust_id",
+						"type": "String"
+					},
+					{
+						"name": "sls_order_dt",
+						"type": "String"
+					},
+					{
+						"name": "sls_ship_dt",
+						"type": "String"
+					},
+					{
+						"name": "sls_sales",
+						"type": "String"
+					},
+					{
+						"name": "sls_quantity",
+						"type": "String"
+					},
+					{
+						"name": "sls_price",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Storage_Raw_Ventas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_Productos_Bronze')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Storage_Raw_Ventas",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "BRONZE"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Productos.csv",
+						"container": "raw-productos"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "prd_id",
+						"type": "String"
+					},
+					{
+						"name": "prd_key",
+						"type": "String"
+					},
+					{
+						"name": "prd_nm",
+						"type": "String"
+					},
+					{
+						"name": "prd_cost",
+						"type": "String"
+					},
+					{
+						"name": "prd_line",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Storage_Raw_Ventas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_CSV_Productos_CAT_MANT_Bronze')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Storage_Raw_Ventas",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "BRONZE"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "Productos_CAT_MANT.csv",
+						"container": "raw-productos"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "String"
+					},
+					{
+						"name": "CAT",
+						"type": "String"
+					},
+					{
+						"name": "SUBCAT",
+						"type": "String"
+					},
+					{
+						"name": "MAINTENANCE",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Storage_Raw_Ventas')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_SQL_DW_Ventas')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"server": "[parameters('LS_SQL_DW_Ventas_properties_typeProperties_server')]",
+					"database": "[parameters('LS_SQL_DW_Ventas_properties_typeProperties_database')]",
+					"encrypt": "mandatory",
+					"trustServerCertificate": false,
+					"authenticationType": "SQL",
+					"userName": "[parameters('LS_SQL_DW_Ventas_properties_typeProperties_userName')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('LS_SQL_DW_Ventas_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_Storage_Raw_Ventas')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_Storage_Raw_Ventas_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
