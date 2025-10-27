@@ -1,0 +1,95 @@
+{
+	"name": "DF_Silver_DimClientes",
+	"properties": {
+		"folder": {
+			"name": "SILVER"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Bronze_Clientes",
+						"type": "DatasetReference"
+					},
+					"name": "Clientes"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Bronze_Clientes_BD_GEN",
+						"type": "DatasetReference"
+					},
+					"name": "ClientesBDGEN"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Bronze_Clientes_location",
+						"type": "DatasetReference"
+					},
+					"name": "ClientesLocation"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "cast1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          cst_id as string,",
+				"          cst_key as string,",
+				"          cst_firstname as string,",
+				"          cst_lastname as string,",
+				"          cst_marital_status as string,",
+				"          cst_gndr as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT * FROM [bronze].[Clientes]',",
+				"     format: 'query') ~> Clientes",
+				"source(output(",
+				"          CID as string,",
+				"          BDATE as string,",
+				"          GEN as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT * FROM [bronze].[Clientes_BD_GEN]',",
+				"     format: 'query') ~> ClientesBDGEN",
+				"source(output(",
+				"          CID as string,",
+				"          CNTRY as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT * FROM [bronze].[Clientes_location]',",
+				"     format: 'query') ~> ClientesLocation",
+				"Clientes, ClientesBDGEN join(cst_id == CID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1, ClientesLocation join(cst_id == ClientesLocation@CID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"join2 cast(output(",
+				"          cst_id as integer,",
+				"          BDATE as date 'yyyy-MM-dd'",
+				"     ),",
+				"     errors: true) ~> cast1"
+			]
+		}
+	}
+}
