@@ -1,0 +1,17 @@
+{
+	"name": "LS_SQL_DW_Ventas",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "sqlventas843121.database.windows.net",
+			"database": "DW_Ventas",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "adminventas",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDJFMzU5ODQ4LTM5MEItNEQ0Mi04MERBLUU1RUMwRTAzQUE0MV9iY2RmMDljYi00ODg5LTRlNzEtOTZkMS1lMTI3MjA1ODkwYzciDQp9"
+		}
+	}
+}
