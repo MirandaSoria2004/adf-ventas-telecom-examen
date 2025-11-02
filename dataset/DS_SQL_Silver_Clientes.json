@@ -1,5 +1,5 @@
 {
-	"name": "DS_SQL_Silver_DimClientes",
+	"name": "DS_SQL_Silver_Clientes",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_SQL_DW_Ventas",
@@ -37,12 +37,8 @@
 				"type": "nvarchar"
 			},
 			{
-				"name": "cst_birthdate",
+				"name": "cst_bdate",
 				"type": "date"
-			},
-			{
-				"name": "cst_generation",
-				"type": "nvarchar"
 			},
 			{
 				"name": "cst_country",
@@ -51,7 +47,7 @@
 		],
 		"typeProperties": {
 			"schema": "silver",
-			"table": "dim_clientes"
+			"table": "clientes"
 		}
 	}
 }

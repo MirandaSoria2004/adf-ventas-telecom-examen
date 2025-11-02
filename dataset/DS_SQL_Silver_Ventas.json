@@ -1,5 +1,5 @@
 {
-	"name": "DS_SQL_Silver_FactVentas",
+	"name": "DS_SQL_Silver_Ventas",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_SQL_DW_Ventas",
@@ -52,7 +52,7 @@
 		],
 		"typeProperties": {
 			"schema": "silver",
-			"table": "fact_ventas"
+			"table": "ventas"
 		}
 	}
 }
