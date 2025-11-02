@@ -1,0 +1,110 @@
+{
+	"name": "DF_Silver_Ventas",
+	"properties": {
+		"folder": {
+			"name": "SILVER"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Bronze_Detalle_ventas",
+						"type": "DatasetReference"
+					},
+					"name": "SourceVentas"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Silver_Ventas",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "TiposVentas"
+				},
+				{
+					"name": "NulosVentas"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          sls_ord_num as string,",
+				"          sls_prd_key as string,",
+				"          sls_cust_id as string,",
+				"          sls_order_dt as string,",
+				"          sls_ship_dt as string,",
+				"          sls_sales as string,",
+				"          sls_quantity as string,",
+				"          sls_price as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT * FROM [bronze].[Detalle_ventas]',",
+				"     format: 'query') ~> SourceVentas",
+				"SourceVentas cast(output(",
+				"          sls_cust_id as integer,",
+				"          sls_order_dt as date 'yyyyMMdd',",
+				"          sls_ship_dt as date 'yyyyMMdd',",
+				"          sls_sales as decimal(10,2),",
+				"          sls_quantity as integer,",
+				"          sls_price as decimal(10,2)",
+				"     ),",
+				"     errors: true) ~> TiposVentas",
+				"TiposVentas filter(!isNull(sls_ord_num) && !isNull(sls_order_dt)) ~> NulosVentas",
+				"NulosVentas select(mapColumn(",
+				"          sls_ord_num,",
+				"          sls_prd_key,",
+				"          sls_cust_id,",
+				"          sls_order_dt,",
+				"          sls_ship_dt,",
+				"          sls_sales,",
+				"          sls_quantity,",
+				"          sls_price",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          sls_ord_num as string,",
+				"          sls_prd_key as string,",
+				"          sls_cust_id as integer,",
+				"          sls_order_dt as date,",
+				"          sls_ship_dt as date,",
+				"          sls_sales as decimal(10,2),",
+				"          sls_quantity as integer,",
+				"          sls_price as decimal(10,2)",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          sls_ord_num,",
+				"          sls_prd_key,",
+				"          sls_cust_id,",
+				"          sls_order_dt,",
+				"          sls_ship_dt,",
+				"          sls_sales,",
+				"          sls_quantity,",
+				"          sls_price",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
