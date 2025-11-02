@@ -634,7 +634,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Silver_DimClientes')]",
+			"name": "[concat(parameters('factoryName'), '/DS_SQL_Silver_Clientes')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -674,12 +674,8 @@
 						"type": "nvarchar"
 					},
 					{
-						"name": "cst_birthdate",
+						"name": "cst_bdate",
 						"type": "date"
-					},
-					{
-						"name": "cst_generation",
-						"type": "nvarchar"
 					},
 					{
 						"name": "cst_country",
@@ -688,7 +684,7 @@
 				],
 				"typeProperties": {
 					"schema": "silver",
-					"table": "dim_clientes"
+					"table": "clientes"
 				}
 			},
 			"dependsOn": [
@@ -696,7 +692,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Silver_DimProductos')]",
+			"name": "[concat(parameters('factoryName'), '/DS_SQL_Silver_Productos')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -734,11 +730,11 @@
 						"type": "nvarchar"
 					},
 					{
-						"name": "prd_category",
+						"name": "prd_cat",
 						"type": "nvarchar"
 					},
 					{
-						"name": "prd_subcategory",
+						"name": "prd_subcat",
 						"type": "nvarchar"
 					},
 					{
@@ -748,7 +744,7 @@
 				],
 				"typeProperties": {
 					"schema": "silver",
-					"table": "dim_productos"
+					"table": "productos"
 				}
 			},
 			"dependsOn": [
@@ -756,7 +752,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DS_SQL_Silver_FactVentas')]",
+			"name": "[concat(parameters('factoryName'), '/DS_SQL_Silver_Ventas')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -811,7 +807,7 @@
 				],
 				"typeProperties": {
 					"schema": "silver",
-					"table": "fact_ventas"
+					"table": "ventas"
 				}
 			},
 			"dependsOn": [
