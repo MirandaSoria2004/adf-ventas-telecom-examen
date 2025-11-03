@@ -1,5 +1,5 @@
 {
-	"name": "DF_Gold_DimFecha",
+	"name": "DimFecha1-1",
 	"properties": {
 		"folder": {
 			"name": "GOLD"
@@ -25,7 +25,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_Gold_DimFecha",
+						"referenceName": "DimFecha1",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"

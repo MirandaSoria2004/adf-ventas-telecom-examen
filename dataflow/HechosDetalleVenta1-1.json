@@ -1,5 +1,5 @@
 {
-	"name": "DF_Gold_HechosDetalleVenta",
+	"name": "HechosDetalleVenta1-1",
 	"properties": {
 		"folder": {
 			"name": "GOLD"
@@ -16,14 +16,14 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_Gold_DimFecha",
+						"referenceName": "DimFecha1",
 						"type": "DatasetReference"
 					},
 					"name": "DimFecha"
 				},
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_Gold_DimFecha",
+						"referenceName": "DimFecha1",
 						"type": "DatasetReference"
 					},
 					"name": "DimFecha2"
@@ -32,7 +32,7 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "DS_SQL_Gold_HechosDetalleVenta",
+						"referenceName": "HechosDetalleVenta1",
 						"type": "DatasetReference"
 					},
 					"name": "sink1"

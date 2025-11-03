@@ -1,5 +1,5 @@
 {
-	"name": "DS_SQL_Gold_HechosDetalleVenta",
+	"name": "HechosDetalleVenta1",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_SQL_DW_Ventas",
