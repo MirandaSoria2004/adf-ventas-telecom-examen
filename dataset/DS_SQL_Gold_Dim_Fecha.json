@@ -1,0 +1,29 @@
+{
+	"name": "DS_SQL_Gold_Dim_Fecha",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_DW_Ventas",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "GOLD"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id_fecha",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "fecha",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "gold",
+			"table": "dim_fecha"
+		}
+	}
+}

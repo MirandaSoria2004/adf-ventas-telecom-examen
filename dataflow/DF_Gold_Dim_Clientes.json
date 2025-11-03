@@ -1,0 +1,95 @@
+{
+	"name": "DF_Gold_Dim_Clientes",
+	"properties": {
+		"folder": {
+			"name": "GOLD"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Silver_Clientes",
+						"type": "DatasetReference"
+					},
+					"name": "SilverClientes"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Gold_Dim_Clientes",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          cst_id as integer,",
+				"          cst_key as string,",
+				"          cst_firstname as string,",
+				"          cst_lastname as string,",
+				"          cst_marital_status as string,",
+				"          cst_gndr as string,",
+				"          cst_bdate as date,",
+				"          cst_country as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT * FROM [silver].[clientes]',",
+				"     format: 'query') ~> SilverClientes",
+				"SilverClientes filter(!isNull(cst_id) && !isNull(cst_firstname) && !isNull(cst_lastname)) ~> filter1",
+				"filter1 select(mapColumn(",
+				"          cst_id,",
+				"          cst_firstname,",
+				"          cst_lastname,",
+				"          cst_marital_status,",
+				"          cst_gndr,",
+				"          cst_bdate,",
+				"          cst_country",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          cst_id as integer,",
+				"          cst_firstname as string,",
+				"          cst_lastname as string,",
+				"          cst_marital_status as string,",
+				"          cst_gndr as string,",
+				"          cst_country as string,",
+				"          cst_bdate as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          cst_id,",
+				"          cst_firstname,",
+				"          cst_lastname,",
+				"          cst_marital_status,",
+				"          cst_gndr,",
+				"          cst_country,",
+				"          cst_bdate",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
