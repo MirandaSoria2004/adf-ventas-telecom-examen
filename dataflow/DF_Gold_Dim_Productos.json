@@ -1,0 +1,92 @@
+{
+	"name": "DF_Gold_Dim_Productos",
+	"properties": {
+		"folder": {
+			"name": "GOLD"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Silver_Productos",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Gold_Dim_Productos",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          prd_id as integer,",
+				"          prd_key as string,",
+				"          prd_nm as string,",
+				"          prd_cost as decimal(10,2),",
+				"          prd_line as string,",
+				"          prd_cat as string,",
+				"          prd_subcat as string,",
+				"          prd_maintenance as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT * FROM [silver].[productos]',",
+				"     format: 'query') ~> source1",
+				"source1 filter(!isNull(prd_key) && !isNull(prd_nm)) ~> filter1",
+				"filter1 select(mapColumn(",
+				"          prd_key,",
+				"          prd_nm,",
+				"          prd_cost,",
+				"          prd_line,",
+				"          prd_cat,",
+				"          prd_maintenance",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          prd_key as string,",
+				"          prd_nm as string,",
+				"          prd_cost as decimal(10,2),",
+				"          prd_line as string,",
+				"          prd_cat as string,",
+				"          prd_maintenance as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          prd_key,",
+				"          prd_nm,",
+				"          prd_cost,",
+				"          prd_line,",
+				"          prd_cat,",
+				"          prd_maintenance",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
