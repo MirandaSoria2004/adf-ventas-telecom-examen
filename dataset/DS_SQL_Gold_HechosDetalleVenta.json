@@ -61,5 +61,6 @@
 			"schema": "gold",
 			"table": "hechos_detalle_venta"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

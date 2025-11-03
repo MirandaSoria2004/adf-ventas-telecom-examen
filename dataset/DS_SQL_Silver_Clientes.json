@@ -49,5 +49,6 @@
 			"schema": "silver",
 			"table": "clientes"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

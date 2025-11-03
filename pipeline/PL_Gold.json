@@ -156,6 +156,8 @@
 		"folder": {
 			"name": "GOLD"
 		},
-		"annotations": []
-	}
+		"annotations": [],
+		"lastPublishTime": "2025-11-03T02:57:35Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
 }
