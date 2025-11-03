@@ -1,0 +1,99 @@
+{
+	"name": "DF_Gold_DimFecha",
+	"properties": {
+		"folder": {
+			"name": "GOLD"
+		},
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Silver_Ventas",
+						"type": "DatasetReference"
+					},
+					"name": "FechaOrder"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Silver_Ventas",
+						"type": "DatasetReference"
+					},
+					"name": "FechaShip"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Gold_DimFecha",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "union1"
+				},
+				{
+					"name": "OrdenarFechas"
+				},
+				{
+					"name": "NulosFechas"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "select1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          fecha as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT sls_order_dt as fecha FROM [silver].[ventas]',",
+				"     format: 'query') ~> FechaOrder",
+				"source(output(",
+				"          fecha as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     query: 'SELECT DISTINCT sls_ship_dt as fecha FROM [silver].[ventas]',",
+				"     format: 'query') ~> FechaShip",
+				"FechaOrder, FechaShip union(byName: true)~> union1",
+				"union1 sort(asc(fecha, true)) ~> OrdenarFechas",
+				"OrdenarFechas filter(!isNull(fecha)) ~> NulosFechas",
+				"NulosFechas aggregate(groupBy(fecha),",
+				"     fecha_p = count(fecha)) ~> aggregate1",
+				"aggregate1 select(mapColumn(",
+				"          fecha",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          id_fecha as integer,",
+				"          fecha as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          fecha",
+				"     )) ~> sink1"
+			]
+		}
+	}
+}
